@@ -1,7 +1,7 @@
 [project]
 name = "finepdf-clustering"
 version = "0.1.0"
-description = "Tooling and documentation scaffold for FinePDF Clustering."
+description = "Streaming BM25 proof of concept for FinePDF agriculture retrieval."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
