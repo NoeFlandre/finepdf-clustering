@@ -1,10 +1,10 @@
 # FinePDF Clustering
 
-The goal of this project is to explore the [FinePDFs dataset](https://huggingface.co/datasets/HuggingFaceFW/finepdfs) and find documents relevant to a chosen domain.
+This project explores the [FinePDFs dataset](https://huggingface.co/datasets/HuggingFaceFW/finepdfs) and finds documents relevant to a chosen domain.
 
 ## Current scope
 
-This repository currently contains a minimal Python project setup and documentation site. Dataset ingestion, relevance methods, and clustering will be designed separately before implementation.
+The current proof of concept streams the English training split, reads its first 1,000 records, and ranks them against one agriculture query using BM25. It uses the schema's extracted `text` field and includes a PDF URL when available. Run it from the project root with `PYTHONPATH=src uv run --locked python -m finepdf_clustering.agriculture_bm25`.
 
 ## Development tools
 
