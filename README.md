@@ -16,14 +16,17 @@ This initial setup contains project metadata, development tools, and documentati
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then sync the development tools:
 
 ```sh
+export UV_CACHE_DIR="$PWD/.uv-cache/cache"
 export UV_PYTHON_INSTALL_DIR="$PWD/.uv-cache/python"
+export UV_PYTHON_BIN_DIR="$PWD/.uv-cache/bin"
 export TMPDIR="$PWD/.tmp"
 export TEMP="$TMPDIR"
 export TMP="$TMPDIR"
+export PYTHONDONTWRITEBYTECODE=1
 uv sync
 ```
 
-The UV cache is configured in `pyproject.toml` under `.uv-cache/cache`. These settings keep the Python runtime, package cache, virtual environment, and temporary files in this checkout.
+The UV cache is configured in `pyproject.toml` under `.uv-cache/cache`. These settings keep UV-managed runtimes, launchers, package cache, the virtual environment, bytecode, and temporary files in this checkout.
 
 ## Tool commands
 

@@ -8,6 +8,7 @@ dependencies = []
 
 [tool.uv]
 cache-dir = ".uv-cache/cache"
+package = false
 
 [dependency-groups]
 dev = ["ruff", "ty", "mkdocs"]

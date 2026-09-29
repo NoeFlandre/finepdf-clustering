@@ -8,7 +8,7 @@ This repository currently contains a minimal Python project setup and documentat
 
 ## Development tools
 
-Set `UV_PYTHON_INSTALL_DIR` and the temporary-directory variables as shown in the repository README before running `uv sync`; the UV cache and managed Python runtime will then stay in the project checkout. Run the configured tools with:
+Set the UV runtime, bin, cache, and temporary-directory variables as shown in the repository README before running `uv sync`; project tooling and its cache will then stay in the checkout. Run the configured tools with:
 
 ```sh
 uv run ruff check .
