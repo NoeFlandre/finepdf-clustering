@@ -4,13 +4,13 @@ This project explores the [FinePDFs dataset](https://huggingface.co/datasets/Hug
 
 ## Agriculture BM25 proof of concept
 
-The command streams the English `eng_Latn` training split with Hugging Face `datasets`, inspects the schema, reads only the first 1,000 documents, and uses the `text` field. It scores every document with `rank-bm25` and prints the top 20 with their PDF URL (when present) and a 300-character preview. It does not download the dataset.
+The command streams the English `eng_Latn` training split with Hugging Face `datasets`, inspects the schema, and reads only the first 5,000 documents from the `text` field. It scores all 5,000 with `rank-bm25`, computes the linearly interpolated 99th-percentile score, and keeps positive scores at or above that cutoff. It prints the top 20 kept documents with their PDF URL (when present) and a 300-character preview. It does not download the dataset.
 
 ```sh
 PYTHONPATH=src uv run --locked python -m finepdf_clustering.agriculture_bm25
 ```
 
-The command writes `agriculture_bm25_top20.csv` in the current directory. The fixed query is `agriculture crop wheat maize rice soil irrigation plant disease farming harvest`.
+The command writes every passing row to `agriculture_bm25_p99_5000.csv` and its timing summary to `agriculture_bm25_p99_5000.metrics.json`. Timings separate dataset initialization, reading, BM25 scoring/filtering, CSV output, and total elapsed time; total includes CSV output and excludes console and metrics-file output. The fixed query is `agriculture crop wheat maize rice soil irrigation plant disease farming harvest`.
 
 ## Toolchain
 
