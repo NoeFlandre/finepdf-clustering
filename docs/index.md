@@ -4,7 +4,7 @@ This project explores the [FinePDFs dataset](https://huggingface.co/datasets/Hug
 
 ## Current scope
 
-The current proof of concept streams the English training split, reads its first 1,000 records, and ranks them against one agriculture query using BM25. It uses the schema's extracted `text` field and includes a PDF URL when available. Run it from the project root with `PYTHONPATH=src uv run --locked python -m finepdf_clustering.agriculture_bm25`.
+The current proof of concept streams the first 5,000 records of the English training split, ranks them against one agriculture query using BM25, and keeps positive scores at or above the run’s 99th-percentile cutoff. It uses the extracted `text` field, includes a PDF URL when available, and records stream and scoring time. The source dataset is not downloaded. Run it from the project root with `PYTHONPATH=src uv run --locked python -m finepdf_clustering.agriculture_bm25`.
 
 ## Development tools
 
