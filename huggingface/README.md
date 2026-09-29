@@ -17,11 +17,10 @@ A small proof of concept that ranks agriculture-related PDFs from the English Fi
 
 ## Files
 
-- [`agriculture_bm25_top20.csv`](agriculture_bm25_top20.csv): the original top-20 sample scored from the first 1,000 streamed records.
 - [`agriculture_bm25_p99_5000.csv`](agriculture_bm25_p99_5000.csv): all 50 records retained by the 99th-percentile filter over the first 5,000 streamed records.
 - [`agriculture_bm25_p99_5000.metrics.json`](agriculture_bm25_p99_5000.metrics.json): the score cutoff, record counts, and measured stage timings for the 5,000-record run.
 
-Both CSV files contain `bm25_score`, `pdf_url`, and `text_preview`; previews are limited to 300 characters. The p99 CSV is sorted by descending score.
+The CSV contains `bm25_score`, `pdf_url`, and `text_preview`; previews are limited to 300 characters. Results are sorted by descending score.
 
 ## Method
 
