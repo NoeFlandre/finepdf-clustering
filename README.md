@@ -9,6 +9,9 @@ This initial setup contains project metadata, development tools, and documentati
 - [uv](https://docs.astral.sh/uv/) manages the project environment, development dependencies, and lockfile.
 - [Ruff](https://docs.astral.sh/ruff/) lints Python code and checks import order.
 - [ty](https://docs.astral.sh/ty/) checks Python types.
+- [pytest](https://docs.pytest.org/) and [coverage.py](https://coverage.readthedocs.io/) enforce full line and branch coverage.
+- [mutmut](https://mutmut.readthedocs.io/) checks that the tests detect behavioral changes.
+- [pre-commit](https://pre-commit.com/) runs the configured formatting and lint hooks.
 - [MkDocs](https://www.mkdocs.org/) builds the project documentation.
 
 ## Setup
@@ -31,13 +34,15 @@ The UV cache is configured in `pyproject.toml` under `.uv-cache/cache`. These se
 ## Tool commands
 
 ```sh
-uv run ruff check .
-uv run ty check
+uv run --locked pre-commit run --all-files
+uv run --locked ty check src tests
 uv run mkdocs serve
 ```
 
-Build the documentation with:
+Run the complete local QA gauntlet with the same command used in CI:
 
 ```sh
-uv run mkdocs build --strict
+bash scripts/quality_gate.sh
 ```
+
+The gate checks the lockfile, formatting and lint, types, 100% line and branch coverage, a CRAP score below 6 for every source function, strict documentation builds, and mutation results with every generated mutant killed. See [the quality gate details](docs/quality.md).

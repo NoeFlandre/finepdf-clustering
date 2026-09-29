@@ -8,16 +8,18 @@ This repository currently contains a minimal Python project setup and documentat
 
 ## Development tools
 
-Set the UV runtime, bin, cache, and temporary-directory variables as shown in the repository README before running `uv sync`; project tooling and its cache will then stay in the checkout. Run the configured tools with:
+Install the locked development tools with `uv sync --locked`. Run formatting and lint checks with:
 
 ```sh
-uv run ruff check .
-uv run ty check
+uv run --locked pre-commit run --all-files
+uv run --locked ty check src tests
 uv run mkdocs serve
 ```
 
-To check that the documentation builds:
+Run the complete test and CI gate locally:
 
 ```sh
-uv run mkdocs build --strict
+bash scripts/quality_gate.sh
 ```
+
+See [Quality gates](quality.md) for the enforced coverage, CRAP, mutation, and documentation thresholds.
