@@ -9,6 +9,11 @@ tags:
   - agriculture
   - bm25
   - finepdfs
+configs:
+  - config_name: default
+    data_files:
+      - split: train
+        path: agriculture_bm25_p99_5000.csv
 ---
 
 # Agriculture BM25 retrieval results
