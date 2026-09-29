@@ -1,0 +1,23 @@
+[project]
+name = "finepdf-clustering"
+version = "0.1.0"
+description = "Tooling and documentation scaffold for FinePDF Clustering."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+cache-dir = ".uv-cache/cache"
+
+[dependency-groups]
+dev = ["ruff", "ty", "mkdocs"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.ty.environment]
+python-version = "3.12"

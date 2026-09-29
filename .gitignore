@@ -1,0 +1,12 @@
+.venv/
+.uv-cache/
+.tmp/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.ty_cache/
+site/
+dist/
+build/
+*.egg-info/
+.env
