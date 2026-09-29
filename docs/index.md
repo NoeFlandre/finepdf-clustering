@@ -1,23 +1,25 @@
 # FinePDF Clustering
 
-The goal of this project is to explore the [FinePDFs dataset](https://huggingface.co/datasets/HuggingFaceFW/finepdfs) and find documents relevant to a chosen domain.
+This project explores the [FinePDFs dataset](https://huggingface.co/datasets/HuggingFaceFW/finepdfs) and finds documents relevant to a chosen domain.
 
 ## Current scope
 
-This repository currently contains a minimal Python project setup and documentation site. Dataset ingestion, relevance methods, and clustering will be designed separately before implementation.
+The current proof of concept streams the English training split, reads its first 1,000 records, and ranks them against one agriculture query using BM25. It uses the schema's extracted `text` field and includes a PDF URL when available. Run it from the project root with `PYTHONPATH=src uv run --locked python -m finepdf_clustering.agriculture_bm25`.
 
 ## Development tools
 
-Set the UV runtime, bin, cache, and temporary-directory variables as shown in the repository README before running `uv sync`; project tooling and its cache will then stay in the checkout. Run the configured tools with:
+Install the locked development tools with `uv sync --locked`. Run formatting and lint checks with:
 
 ```sh
-uv run ruff check .
-uv run ty check
+uv run --locked pre-commit run --all-files
+uv run --locked ty check src tests
 uv run mkdocs serve
 ```
 
-To check that the documentation builds:
+Run the complete test and CI gate locally:
 
 ```sh
-uv run mkdocs build --strict
+bash scripts/quality_gate.sh
 ```
+
+See [Quality gates](quality.md) for the enforced coverage, CRAP, mutation, and documentation thresholds.

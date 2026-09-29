@@ -5,6 +5,10 @@ __pycache__/
 *.py[cod]
 .ruff_cache/
 .ty_cache/
+.coverage
+.coverage.*
+htmlcov/
+mutants/
 site/
 dist/
 build/

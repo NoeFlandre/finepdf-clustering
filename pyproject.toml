@@ -1,24 +1,55 @@
 [project]
 name = "finepdf-clustering"
 version = "0.1.0"
-description = "Tooling and documentation scaffold for FinePDF Clustering."
+description = "Streaming BM25 proof of concept for FinePDF agriculture retrieval."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "datasets>=5.0.1",
+    "rank-bm25>=0.2.2",
+]
 
 [tool.uv]
 cache-dir = ".uv-cache/cache"
 package = false
 
 [dependency-groups]
-dev = ["ruff", "ty", "mkdocs"]
+dev = [
+    "ruff",
+    "ty",
+    "mkdocs",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "radon>=6.0.1",
+    "mutmut>=3.8.0",
+    "pre-commit>=4.6.2",
+]
 
 [tool.ruff]
 line-length = 88
 target-version = "py312"
 
 [tool.ruff.lint]
-extend-select = ["I"]
+select = ["B", "E", "F", "I", "RUF", "SIM", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = ["--strict-config", "--strict-markers", "-p", "no:cacheprovider"]
+
+[tool.coverage.run]
+branch = true
+relative_files = true
+source = ["src/finepdf_clustering"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+
+[tool.mutmut]
+source_paths = ["src/finepdf_clustering"]
+pytest_add_cli_args_test_selection = ["tests"]
+use_setproctitle = false
 
 [tool.ty.environment]
 python-version = "3.12"
