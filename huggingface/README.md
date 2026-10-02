@@ -18,29 +18,29 @@ configs:
 
 # Agriculture BM25 retrieval results
 
-A small proof of concept that ranks agriculture-related PDFs from the English FinePDFs training split. Scores are ranking values, not relevance probabilities or manually judged labels.
+This is a small proof of concept. It ranks agriculture PDFs from the English FinePDFs training split. The scores are ranking values. They are not relevance probabilities. They are not manually judged labels.
 
 ## Files
 
-- [`agriculture_bm25_p99_5000.csv`](agriculture_bm25_p99_5000.csv): all 50 records retained by the 99th-percentile filter over the first 5,000 streamed records.
-- [`agriculture_bm25_p99_5000.metrics.json`](agriculture_bm25_p99_5000.metrics.json): the score cutoff, record counts, and measured stage timings for the 5,000-record run.
+- [`agriculture_bm25_p99_5000.csv`](agriculture_bm25_p99_5000.csv): the 50 records that the 99th-percentile filter keeps from the first 5,000 streamed records.
+- [`agriculture_bm25_p99_5000.metrics.json`](agriculture_bm25_p99_5000.metrics.json): the score cutoff, the record counts, and the measured stage times for the 5,000-record run.
 
-The CSV contains `bm25_score`, `pdf_url`, and `text_preview`; previews are limited to 300 characters. Results are sorted by descending score.
+The CSV file contains `bm25_score`, `pdf_url`, and `text_preview`. A preview has a maximum of 300 characters. The rows are in descending order of score.
 
 ## Method
 
 - Source: [`HuggingFaceFW/finepdfs`](https://huggingface.co/datasets/HuggingFaceFW/finepdfs), config `eng_Latn`, split `train`.
-- Read only the requested prefix in Hugging Face `datasets` streaming mode; the source dataset is not downloaded.
-- Use the extracted `text` field and retain `url` when available.
+- Read only the requested prefix in Hugging Face `datasets` streaming mode. The system does not download the source dataset.
+- Use the extracted `text` field. Keep `url` when it is available.
 - Query: `agriculture crop wheat maize rice soil irrigation plant disease farming harvest`.
-- Tokenize with lowercase regex word splitting and score with `rank-bm25` BM25Okapi.
-- For the 5,000-record run, compute the linearly interpolated 99th percentile from all BM25 scores, then keep positive scores at or above the cutoff. Ties can retain more than one percent of records.
+- Split the text into tokens with a lowercase regex word splitter. Score the tokens with `rank-bm25` BM25Okapi.
+- For the 5,000-record run, calculate the linearly interpolated 99th percentile of all BM25 scores. Then keep the positive scores at or above the cutoff. Tied scores can keep more than one percent of the records.
 
-The recorded p99 cutoff is `15.913687525759888`; 50 of 5,000 records were retained.
+The recorded p99 cutoff is `15.913687525759888`. The run kept 50 of 5,000 records.
 
 ## Observed timing
 
-One run on 2026-09-29 took 11.054973 seconds overall, or 452.285 documents per second. The times include network streaming and depend on the runtime and connection.
+One run on 2026-09-29 took 11.054973 seconds in total. This is 452.285 documents per second. The times include the network streaming time. The times change with the runtime and the connection.
 
 | Stage | Seconds |
 | --- | ---: |
@@ -50,8 +50,8 @@ One run on 2026-09-29 took 11.054973 seconds overall, or 452.285 documents per s
 | CSV output | 0.001052 |
 | Total | 11.054973 |
 
-Total includes CSV output and excludes console output and writing the metrics JSON.
+The total includes the CSV output. It excludes the console output and the write of the metrics JSON.
 
 ## Attribution and scope
 
-The FinePDFs Hub metadata declares the source dataset license as ODC-By. Source URLs are retained for attribution; underlying PDFs may have their own terms. This is a small sample from the start of the English training split and is not a relevance benchmark.
+The FinePDFs Hub metadata declares the license of the source dataset as ODC-By. The files keep the source URLs for attribution. The underlying PDFs can have their own terms. This is a small sample from the start of the English training split. It is not a relevance benchmark.
