@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import csv
 import json
+import runpy
+import sys
 from pathlib import Path
 from typing import Any, ClassVar
 
@@ -221,6 +223,38 @@ def test_main_uses_documented_default_output_paths(
     output = capsys.readouterr().out
     assert "Saved 0 results to agriculture_bm25_p99_5000.csv" in output
     assert "Saved run metrics to agriculture_bm25_p99_5000.metrics.json" in output
+
+
+def test_module_entrypoint_runs_main_without_downloading_dataset(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class EmptyStream(list[dict[str, Any]]):
+        features: ClassVar[dict[str, type[str]]] = {"text": str, "url": str}
+
+    monkeypatch.setattr(
+        "datasets.load_dataset", lambda *_args, **_kwargs: EmptyStream()
+    )
+    output_path = tmp_path / "entrypoint.csv"
+    metrics_path = tmp_path / "entrypoint.metrics.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "agriculture_bm25",
+            "--output",
+            str(output_path),
+            "--metrics-output",
+            str(metrics_path),
+        ],
+    )
+    monkeypatch.chdir(tmp_path)
+
+    with pytest.raises(SystemExit) as error:
+        runpy.run_path(str(Path(agriculture_bm25.__file__)), run_name="__main__")
+
+    assert error.value.code == 0
+    assert output_path.is_file()
+    assert metrics_path.is_file()
 
 
 def test_main_uses_safe_throughput_when_run_clock_has_zero_duration(

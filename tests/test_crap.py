@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import ast
 import json
+import runpy
+import sys
 from pathlib import Path
 
 import pytest
@@ -360,3 +362,38 @@ def test_main_rejects_coverage_json_that_is_not_an_object(
     assert capsys.readouterr().err == (
         "Unable to calculate CRAP scores: Coverage JSON must contain an object\n"
     )
+
+
+def test_module_entrypoint_passes_with_coverage_report(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    source = tmp_path / "src/finepdf_clustering/sample.py"
+    source.parent.mkdir(parents=True)
+    source.write_text("def answer() -> int:\n    return 42\n", encoding="utf-8")
+    coverage_path = tmp_path / "coverage.json"
+    coverage_path.write_text(
+        json.dumps(
+            {
+                "files": {
+                    "src/finepdf_clustering/sample.py": {
+                        "executed_lines": [1, 2],
+                        "missing_lines": [],
+                    }
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["crap", "--root", str(tmp_path), "--coverage-json", str(coverage_path)],
+    )
+
+    with pytest.raises(SystemExit) as error:
+        runpy.run_path(str(Path(crap.__file__)), run_name="__main__")
+
+    assert error.value.code == 0
+    assert "CRAP gate passed: all 1 functions score below 6" in capsys.readouterr().out

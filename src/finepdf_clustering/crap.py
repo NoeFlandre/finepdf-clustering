@@ -20,8 +20,6 @@ MAX_CRAP_SCORE = 6.0
 
 @dataclass(frozen=True)
 class FunctionScore:
-    """Complexity, coverage, and CRAP score for one Python function."""
-
     path: str
     name: str
     line: int
@@ -31,7 +29,6 @@ class FunctionScore:
 
 
 def calculate_crap_score(complexity: int, line_coverage: float) -> float:
-    """Return the CRAP score for a function's complexity and line coverage."""
     if complexity < 1:
         raise ValueError("complexity must be at least 1")
     if not math.isfinite(line_coverage) or not 0.0 <= line_coverage <= 1.0:
@@ -43,7 +40,6 @@ def calculate_crap_score(complexity: int, line_coverage: float) -> float:
 def function_statement_lines(
     node: ast.FunctionDef | ast.AsyncFunctionDef,
 ) -> frozenset[int]:
-    """Return statement lines owned by a function, excluding nested bodies."""
     lines: set[int] = set()
     statements = list(node.body)
 
@@ -66,7 +62,6 @@ def _coverage_for_source(
     coverage_files: Mapping[str, Any],
     project_root: Path,
 ) -> Mapping[str, Any]:
-    """Find one source file's coverage record, accepting relative report paths."""
     resolved_source = source_path.resolve()
     for coverage_path, record in coverage_files.items():
         candidate = (project_root / coverage_path).resolve()
@@ -84,7 +79,6 @@ def _coverage_for_source(
 def _function_nodes(
     syntax_tree: ast.Module,
 ) -> dict[tuple[str, int], ast.FunctionDef | ast.AsyncFunctionDef]:
-    """Index function AST nodes by their name and definition line."""
     return {
         (node.name, node.lineno): node
         for node in ast.walk(syntax_tree)
@@ -97,7 +91,6 @@ def score_source_file(
     coverage_record: Mapping[str, Any],
     project_root: Path | None = None,
 ) -> list[FunctionScore]:
-    """Calculate scores for every function in one source file."""
     source_path = source_path.resolve()
     root = (project_root or source_path.parent).resolve()
     source = source_path.read_bytes().decode()
@@ -133,7 +126,6 @@ def _score_function(
     executed_lines: set[int],
     relative_path: str,
 ) -> FunctionScore:
-    """Score one Radon function block against its matching AST node."""
     node = function_nodes.get((block.name, block.lineno))
     if node is None:
         raise ValueError(
@@ -160,7 +152,6 @@ def _score_function(
 def score_project(
     project_root: Path, coverage_report: Mapping[str, Any]
 ) -> list[FunctionScore]:
-    """Calculate CRAP scores for all Python functions under ``src``."""
     root = project_root.resolve()
     files = coverage_report.get("files")
     if not isinstance(files, dict):
@@ -194,7 +185,6 @@ def _print_scores(scores: Sequence[FunctionScore]) -> None:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    """Run the CRAP gate against a coverage.py JSON report."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--coverage-json", type=Path, required=True)
@@ -217,4 +207,4 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())  # pragma: no cover
+    raise SystemExit(main())
