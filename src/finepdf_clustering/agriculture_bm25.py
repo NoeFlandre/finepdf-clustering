@@ -28,15 +28,12 @@ PREVIEW_CHARS = 300
 
 
 class SearchResult(NamedTuple):
-    """One ranked document with a short display preview."""
-
     bm25_score: float
     pdf_url: str
     text_preview: str
 
 
 def percentile_threshold(scores: Sequence[float], percentile: float) -> float:
-    """Return a linearly interpolated score percentile from 0 to 100."""
     if not scores:
         raise ValueError("percentile calculation requires at least one score")
     if not 0 <= percentile <= 100:
@@ -56,7 +53,6 @@ def percentile_threshold(scores: Sequence[float], percentile: float) -> float:
 def select_by_percentile(
     results: Sequence[SearchResult], percentile: float
 ) -> tuple[float, list[SearchResult]]:
-    """Keep positive-scoring results at or above the selected percentile."""
     if not results:
         return 0.0, []
 
@@ -70,26 +66,22 @@ def select_by_percentile(
 
 
 def is_eligible_score(score: float, threshold: float) -> bool:
-    """Check that a score is positive and meets the percentile cutoff."""
     return score > 0 and score >= threshold
 
 
 def select_fields(features: Mapping[str, object]) -> tuple[str, str | None]:
-    """Select the extracted text field and the optional source URL field."""
     if "text" not in features:
         raise ValueError("FinePDFs schema must contain the extracted text field 'text'")
     return "text", "url" if "url" in features else None
 
 
 def tokenize(text: str) -> list[str]:
-    """Lowercase text and split it into simple word tokens."""
     return re.findall(r"\b\w+\b", text.lower())
 
 
 def collect_documents(
     documents: Iterable[Mapping[str, Any]], limit: int
 ) -> list[Mapping[str, Any]]:
-    """Read at most ``limit`` records from an iterable stream."""
     iterator = iter(documents)
     try:
         return list(islice(iterator, limit))
@@ -105,7 +97,6 @@ def score_documents(
     url_field: str | None,
     top_k: int = TOP_K,
 ) -> list[SearchResult]:
-    """Score every document and return the highest scoring previews."""
     if not documents:
         return []
 
@@ -129,7 +120,6 @@ def score_documents(
 
 
 def write_results(results: Sequence[SearchResult], output_path: Path) -> None:
-    """Write the ranked results as a small CSV file."""
     with output_path.open("w", newline="", encoding="utf-8") as output_file:
         writer = csv.DictWriter(
             output_file,
@@ -140,14 +130,12 @@ def write_results(results: Sequence[SearchResult], output_path: Path) -> None:
 
 
 def write_metrics(metrics: Mapping[str, Any], output_path: Path) -> None:
-    """Write one JSON object describing the processed sample and its timing."""
     with output_path.open("w", encoding="utf-8") as output_file:
         json.dump(metrics, output_file, indent=2, sort_keys=True)
         output_file.write("\n")
 
 
 def print_results(results: Sequence[SearchResult]) -> None:
-    """Print the top results with scores, URLs, and short text previews."""
     print("Rank\tBM25 score\tPDF URL\tText preview")
     for rank, result in enumerate(results, start=1):
         preview = result.text_preview.replace("\n", " ")
@@ -158,7 +146,6 @@ def print_results(results: Sequence[SearchResult]) -> None:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    """Stream, score, filter, and time the first 5,000 FinePDFs records."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--output",
@@ -237,5 +224,5 @@ def main(argv: Sequence[str] | None = None) -> int:
     return 0
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     raise SystemExit(main())
